@@ -23,5 +23,5 @@ class ListSchema(ma.Schema):
         fields = ('id', 'date')
 
 # Initialize User Schema
-user_schema = ListSchema()
-users_schema = ListSchema(many=True)
+list_schema = ListSchema()
+lists_schema = ListSchema(many=True)
