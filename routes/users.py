@@ -1,21 +1,23 @@
-from flask import jsonify, request
-from run import app, db
+from flask import Blueprint, render_template, jsonify, request
+from run import db
 from schema import User, user_schema, users_schema
 
+users = Blueprint("users", __name__)
+
 # INDEX ROUTE
-@app.route('/users/', methods=['GET'])
-def user_index():
+@users.route('/', methods=['GET'])
+def index():
     users = User.query.all()
 
     return users_schema.jsonify(users)
 
 # CREATE ROUTE
-@app.route('/users/', methods=['POST'])
-def user_create():
+@users.route('/', methods=['POST'])
+def create():
     firstname = request.json['firstname']
     lastname = request.json['lastname']
     email = request.json['email']
-
+    
     new_user = User(firstname, lastname, email)
 
     db.session.add(new_user)
@@ -24,8 +26,8 @@ def user_create():
     return user_schema.jsonify(new_user)
 
 # SHOW ROUTE
-@app.route('/users/<id>/', methods=['GET'])
-def user_show(id):
+@users.route('/<id>/', methods=['GET'])
+def show(id):
     user = User.query.get(id)
 
     if user is None:
@@ -37,8 +39,8 @@ def user_show(id):
         return user_schema.jsonify(user)
 
 # UPDATE ROUTE
-@app.route('/users/<id>', methods=['PUT'])
-def user_update(id):
+@users.route('/<id>', methods=['PUT'])
+def update(id):
     user = User.query.get(id)
 
     if user is None:
@@ -51,5 +53,3 @@ def user_update(id):
     db.session.commit()
 
     return user_schema.jsonify(user)
-
-

@@ -1,3 +1,3 @@
 # all routes
-import routes.home
-import routes.users
+from routes.home import home
+from routes.users import users
