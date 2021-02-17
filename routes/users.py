@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
-from run import db
 from schema import User, user_schema, users_schema
+from run import db
 
 users = Blueprint("users", __name__)
 
