@@ -7,6 +7,7 @@ sys.path.append(parentdir)
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from run import db, app
+from sqlalchemy.orm import validates
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -99,6 +100,12 @@ class ListItem(db.Model):
     # belongs_to
     item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
+
+    @validates('quantity_type')
+    def valid_quantity_type(self):
+        validTypes = ['teaspoon', 'tablespoon', 'oz', 'cup', 'pint', 'quart', 'gallon']
+        assert self.quantity_type in validTypes, "Not a valid quantity type."
+        return 
 
     @property
     def name(self):
