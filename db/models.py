@@ -1,10 +1,25 @@
-from run import db
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+import os, sys
+# import from parent directory:
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+# import
+from run import db, app
+
+migrate = Migrate(app, db)
+manager = Manager(app)
+
+manager.add_command('db', MigrateCommand)
 
 # ========================================
 #                 USER
 # ========================================
 
 class User(db.Model):
+    __table_args__ = {'extend_existing': True} 
+
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(30), nullable=False)
     lastname = db.Column(db.String(30), nullable=False)
@@ -20,6 +35,8 @@ class User(db.Model):
 # ========================================
 
 class List(db.Model):
+    __table_args__ = {'extend_existing': True} 
+
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
     # belongs_to
@@ -41,6 +58,8 @@ class List(db.Model):
 # ========================================
 
 class Department(db.Model):
+    __table_args__ = {'extend_existing': True} 
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     # has_many
@@ -54,6 +73,8 @@ class Department(db.Model):
 # ========================================
 
 class Item(db.Model):
+    __table_args__ = {'extend_existing': True} 
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     # belongs_to
@@ -70,8 +91,11 @@ class Item(db.Model):
 # ========================================
 
 class ListItem(db.Model):
+    __table_args__ = {'extend_existing': True} 
+
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
+    quantity_type = db.Column(db.String(30), nullable=False)
     # belongs_to
     item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
@@ -84,5 +108,5 @@ class ListItem(db.Model):
     def __repr__(self):
         return '<ListItem - %s - %s>' % (self.item.name, self.quantity)
 
-
-
+if __name__ == '__main__':
+    manager.run()
