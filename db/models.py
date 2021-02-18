@@ -95,22 +95,26 @@ class ListItem(db.Model):
     __table_args__ = {'extend_existing': True} 
 
     id = db.Column(db.Integer, primary_key=True)
-    quantity = db.Column(db.Integer, nullable=False)
+    quantity_value = db.Column(db.Integer)
     quantity_type = db.Column(db.String(30), nullable=False)
     # belongs_to
     item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
     list_id = db.Column(db.Integer, db.ForeignKey('list.id'), nullable=False)
 
     @validates('quantity_type')
-    def valid_quantity_type(self):
+    def valid_quantity_type(self, key, value):
         validTypes = ['teaspoon', 'tablespoon', 'oz', 'cup', 'pint', 'quart', 'gallon']
-        assert self.quantity_type in validTypes, "Not a valid quantity type."
-        return 
+        assert value in validTypes, "Not a valid quantity type."
+        return value
 
     @property
     def name(self):
         item = Item.query.filter_by(id = self.item_id).first()
         return item.name
+    
+    @property
+    def quantity(self):
+        return '%s %s' % (self.quantity_value, self.quantity_type)
 
     def __repr__(self):
         return '<ListItem - %s - %s>' % (self.item.name, self.quantity)
