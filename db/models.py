@@ -1,11 +1,11 @@
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+# enable parent imports:
 import os, sys
-# import from parent directory:
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-# import
+# all imports
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 from run import db, app
 
 migrate = Migrate(app, db)
