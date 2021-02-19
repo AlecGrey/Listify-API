@@ -8,7 +8,7 @@ This is the directory for the Python Flask API for Listify.
 - Jinja - static pages with nested components, includes Python logic
 - WTForms (TBD) - Library to assist in form creation and validation handling
 
-## To-do List (as of 2/17/21)
+## To-do List
 
 * [X] ~~*Finish validations for all current models*~~ [2021-02-19]
 * [ ] Create Admin pages to allow user to input data, delete records
