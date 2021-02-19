@@ -14,8 +14,9 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 # ROUTES
-from api.routes import home, users
+from api.routes import home, users, admin
 
 # ~~ MAP ROUTES AS BLUEPRINTS ~~ #
 app.register_blueprint(home, url_prefix='')
 app.register_blueprint(users, url_prefix='/users')
+app.register_blueprint(admin, url_prefix='/admin')
