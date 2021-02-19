@@ -1,0 +1,6 @@
+{% from "admin/components/form.html" import render_form %}
+{% extends "layout.html" %}
+
+{% block content %}
+    {{ render_form(table, data, rel_data) }}
+{% endblock content %}
