@@ -1,5 +1,5 @@
 {% macro render_form(table, data=None, rel_data=None) %}
-<form>
+<form action={{ '/admin/' + table + 's/' }} method="post">
     {% if table == 'user' %}
 
     <div class='form-group'>
@@ -52,6 +52,13 @@
     <div class='form-group'>
         <label for='date'>Date:</label>
         <input type='date' name='date'>
+    </div>
+
+    {% elif table == 'recipe' %}
+
+    <div class='form-group'>
+        <label for='name'>Recipe name:</label>
+        <input type='text' name='name'>
     </div>
 
     {% endif %}

@@ -18,6 +18,13 @@ class User(db.Model):
     # has_many
     lists = db.relationship('List', backref='user')
 
+    @validates('firstname', 'lastname', 'email')
+    def empty_string_to_null(self, key, value):
+        if value == '':
+            return None
+        else:
+            return value
+
     def __repr__(self):
         return'<User - %s %s - %s>' % (self.firstname, self.lastname, self.email)
 
@@ -122,7 +129,7 @@ class Recipe(db.Model):
         return '<Recipe %s>' % self.name
 
 class Ingredient(db.Model):
-    __table_args__ = {'extend_existing': True} 
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     quantity_value = db.Column(db.Integer)
