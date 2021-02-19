@@ -72,6 +72,7 @@ class Item(db.Model):
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'), nullable=False)
     # has_many
     list_items = db.relationship('ListItem', backref='item')
+    ingredients = db.relationship('Ingredient', backref='item')
 
 
     def __repr__(self):
@@ -104,7 +105,46 @@ class ListItem(db.Model):
     
     @property
     def quantity(self):
-        return '%s %s' % (self.quantity_value, self.quantity_type)
+        return [quantity_value, quantity_type]
 
     def __repr__(self):
         return '<ListItem - %s - %s>' % (self.item.name, self.quantity)
+
+class Recipe(db.Model):
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    # has_many
+    ingredients = db.relationship('Ingredient', backref='recipe')
+
+    def __repr__(self):
+        return '<Recipe %s>' % self.name
+
+class Ingredient(db.Model):
+    __table_args__ = {'extend_existing': True} 
+
+    id = db.Column(db.Integer, primary_key=True)
+    quantity_value = db.Column(db.Integer)
+    quantity_type = db.Column(db.String(30), nullable=False)
+    # belongs_to
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+
+    @validates('quantity_type')
+    def valid_quantity_type(self, key, value):
+        validTypes = ['teaspoon', 'tablespoon', 'oz', 'cup', 'pint', 'quart', 'gallon']
+        assert value in validTypes, "Not a valid quantity type."
+        return value
+
+    @property
+    def name(self):
+        item = Item.query.filter_by(id = self.item_id).first()
+        return item.name
+    
+    @property
+    def quantity(self):
+        return [quantity_value, quantity_type]
+
+    def __repr__(self):
+        return '<Ingredient - %s - %s>' % (self.item.name, self.quantity)
