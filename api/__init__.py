@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 
 # ~~ APP INITIALIZATION ~~ #
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'SEEEECRET'
 # ~~ DB CONFIG ~~ #
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///listify_api_development.sqlite3'

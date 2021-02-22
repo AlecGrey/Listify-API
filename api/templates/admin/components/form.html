@@ -1,65 +1,51 @@
-{% macro render_form(table, data=None, rel_data=None) %}
-<form action={{ '/admin/' + table + 's/' }} method="post">
+{% macro render_form(table, form) %}
+<form action={{ '/admin/' + table + 's/' }} method="POST">
+    {{ form.csrf_token }}
     {% if table == 'user' %}
 
-    <div class='form-group'>
-        <label for='firstname'>First name:</label>
-        <input type='text' name='firstname'>
-    </div>
-    <div class='form-group'>
-        <label for='lastname'>Last name:</label>
-        <input type='text' name='lastname'>
-    </div>
-    <div class='form-group'>
-        <label for='email'>Email address:</label>
-        <input type='text' name='email'>
-    </div>
+        {{ form.firstname.label }}
+        {{ form.firstname }}
+        <span style='color:red;'>{{ form.firstname.errors[0] }}</span><br>
+
+        {{ form.lastname.label }}
+        {{ form.lastname }}
+        <span style='color:red;'>{{ form.lastname.errors[0] }}</span><br>
+
+        {{ form.email.label }}
+        {{ form.email }}
+        <span style='color:red;'>{{ form.email.errors[0] }}</span><br>
 
     {% elif table == 'department' %}
 
-    <div class='form-group'>
-        <label for='department'>Department:</label>
-        <input type='text' name='department'>
-    </div>
+        {{ form.name.label }}
+        {{ form.name }}
+        <span style='color:red;'>{{ form.name.errors[0] }}</span><br>
 
     {% elif table == 'item' %}
 
-    <div class='form-group'>
-        <label for='department'>Department:</label>
-        <select name='department'>
-            {% for dept in rel_data %}
-                <option value={{ dept.id }}>{{ dept.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class='form-group'>
-        <label for='item'>Name:</label>
-        <input type='text' name='item'>
-    </div>
+        {{ form.department_id.label }}
+        {{ form.department_id }}
+        <span style='color:red;'>{{ form.department_id.errors[0] }}</span><br>
+
+        {{ form.name.label }}
+        {{ form.name }}
+        <span style='color:red;'>{{ form.name.errors[0] }}</span><br>
 
     {% elif table == 'list' %}
 
-    <div class='form-group'>
-        <label for='user'>User:</label>
-        <select name='user'>
-            {% for user in rel_data %}
-                <option value={{ user.id }}>
-                    {{ "%s, %s - %s" % (user.lastname, user.firstname, user.email) }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class='form-group'>
-        <label for='date'>Date:</label>
-        <input type='date' name='date'>
-    </div>
+        {{ form.user_id.label }}
+        {{ form.user_id }}
+        <span style='color:red;'>{{ form.user_id.errors[0] }}</span><br>
+
+        {{ form.date.label }}
+        {{ form.date }}
+        <span style='color:red;'>{{ form.date.errors[0] }}</span><br>
 
     {% elif table == 'recipe' %}
 
-    <div class='form-group'>
-        <label for='name'>Recipe name:</label>
-        <input type='text' name='name'>
-    </div>
+        {{ form.name.label }}
+        {{ form.name }}
+        <span style='color:red;'>{{ form.name.errors[0] }}</span><br>
 
     {% endif %}
     <button class='btn btn-primary' type='submit'>Submit</button>

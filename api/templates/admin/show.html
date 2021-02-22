@@ -2,5 +2,11 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    {{ render_form(table, data, rel_data) }}
+    {{ render_form(table, form) }}
+    {% if success: %}
+        <p style='color:green;'>Your data was submitted successfully.</p>
+        {% elif success == False: %}
+        <p style='color:red;'>{{ errors[0] }}</p>
+
+    {% endif %}
 {% endblock content %}
