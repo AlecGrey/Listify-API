@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from api import db
 from api.database import models
 from api.forms import UserForm, DepartmentForm, ItemForm, ListForm, RecipeForm
@@ -14,20 +14,22 @@ def index():
 #                   USER ROUTES
 # =================================================
 
+def get_all_users():
+    return models.User.query.all()
+
 @admin.route('/users/', methods=['GET'])
 def users():
-    return render_template('admin/show.html', table='user', form=UserForm())
+    return render_template('admin/show.html', table='user', form=UserForm(), data=get_all_users())
 
 @admin.route('/users/', methods=['POST'])
 def create_user():
+    data = models.User.query.all()
     # WTFORM VALIDATIONS
     form = UserForm()
-    # form fails validations, return to template with errors
+    # IF FRONTEND VALIDATION FAILS
     if not form.validate_on_submit():
-        return render_template('admin/show.html', table='user', form=form)
-    
-    errors = []
-    # ATTEMPT TO SAVE USER TO DATABASE
+        return render_template('admin/show.html', table='user', form=form, data=get_all_users())
+    # ATTEMPT TO SAVE USER
     try:
         db.session.add(models.User(
             firstname = request.form.get('firstname'),
@@ -36,11 +38,12 @@ def create_user():
         ))
         db.session.commit()
     except:
-        errors.append('The user could not be created')
-    # was db submission successful?
-    success = len(errors) == 0
-    # return to same route with either success or failure and error list
-    return render_template('admin/show.html', table='user', form=form, errors=errors, success=success)
+        db.session.rollback()
+        flash('The user could not be created in the database.', 'error-flash')
+        return render_template('admin/show.html', table='user', form=form, data=get_all_users())
+    # IF THE USER SUCCESSFULLY SAVED
+    flash('User created successfully!', 'success-flash')
+    return redirect(url_for('admin.users'))
 
 # =================================================
 #                DEPARTMENT ROUTES
