@@ -23,8 +23,6 @@ def users():
 
 @admin.route('/users/', methods=['POST'])
 def create_user():
-    data = models.User.query.all()
-    # WTFORM VALIDATIONS
     form = UserForm()
     # IF FRONTEND VALIDATION FAILS
     if not form.validate_on_submit():
@@ -49,32 +47,33 @@ def create_user():
 #                DEPARTMENT ROUTES
 # =================================================
 
+def get_all_departments():
+    return models.Department.query.all()
+
 @admin.route('/departments/', methods=['GET'])
 def departments():
     # PRIMARY DATA:
-    return render_template('admin/show.html', table='department', form=DepartmentForm())
+    return render_template('admin/show.html', table='department', form=DepartmentForm(), data=get_all_departments())
 
 @admin.route('/departments/', methods=['POST'])
 def create_department():
-    # WTFORM VALIDATIONS
     form = DepartmentForm()
-    # form fails validations, return to template with errors
+    # FRONTEND VALIDATION FAILS
     if not form.validate_on_submit():
-        return render_template('admin/show.html', table='department', form=form)
-
-    errors = []
-    # SAVE USER
+        return render_template('admin/show.html', table='department', form=form, data=get_all_departments())
+    # ATTEMPT TO SAVE USER
     try:
         db.session.add(models.Department(
             name = request.form.get('name')
         ))
         db.session.commit()
     except:
-        errors.append('The dept could not be created')
-    # was db submission successful?
-    success = len(errors) == 0
-    # render template with errors & success bool:
-    return render_template('admin/show.html', table='department', form=form, errors=errors, success=success)
+        db.session.rollback()
+        flash('the department could not be created in the database', 'error-flash')
+        return render_template('admin/show.html', table='department', form=form, data=get_all_departments())
+    # IF SAVE WAS SUCCESSFUL
+    flash('Department created successfully!', 'success-flash')
+    return redirect(url_for('admin.departments'))
 
 # =================================================
 #                   ITEM ROUTES

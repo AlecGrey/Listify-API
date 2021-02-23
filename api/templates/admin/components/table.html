@@ -1,6 +1,8 @@
 {% macro render_table(table, data) %}
 <table class='table'>
+
 {% if table == 'user' %}
+
     <thead>
         <tr>
             <th scope='col'>#</th>
@@ -19,6 +21,24 @@
         </tr>
         {% endfor %}
     </tbody>
+    
+{% elif table == 'department' %}
+    
+    <thead>
+        <tr>
+            <th scope='col'>#</th>
+            <th scope='col'>name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dept in data %}
+        <tr>
+            <th scope="row">{{ dept.id }}</th>
+            <td>{{ dept.name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
 {% endif %}
 </table>
 {% endmacro %}
